@@ -2,11 +2,11 @@ module Practica03 where
 
 -- Práctica 03: Resolución Binaria
 
--- 3.1 Lógica Proposicional
-
 -- Integrantes: Luis Juárez Erick
 --              Herrera Avalos Julio Alejandro
 --              Peña Villegas Diego Eduardo
+
+-- 3.1 Lógica Proposicional
 
 -- Tipo de dato Prop
 data Prop = 
