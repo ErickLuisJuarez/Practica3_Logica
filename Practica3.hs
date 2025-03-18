@@ -44,14 +44,6 @@ negar (Or f1 f2) = (And (negar f1) (negar f2))
 negar (Impl f1 f2) = (And f1 (negar f2))
 negar (Syss f1 f2)= negar (And (Impl f1 f2) (Impl f2 f1))
 
---Funcion auxiliar que aplica la distribucion de la disyuncion parcialmente
-distribuir :: Prop -> Prop
-distribuir (Or p (And q r)) = And (distribuir (Or p q)) (distribuir (Or p r))
-distribuir (Or (And q r) p) = And (distribuir (Or q p)) (distribuir (Or r p))
-distribuir (Or p q) = Or (distribuir p) (distribuir q)
-distribuir (And p q) = And (distribuir p) (distribuir q)
-distribuir p = p
-
 -- Funcion que convierte una formula proposicional en su forma normal negativa
 fnn :: Prop -> Prop
 fnn (Not p) = negar (fnn p)
@@ -61,10 +53,24 @@ fnn (Impl p q) = fnn (Or (negar p) q)
 fnn (Syss p q) = fnn (And (Impl p q) (Impl q p))
 fnn p = p
 
+--Funcion auxiliar que aplica la distribucion de la disyuncion parcialmente
+distribuir :: Prop -> Prop
+distribuir (Or p (And q r)) = And (distribuir (Or p q)) (distribuir (Or p r))
+distribuir (Or (And q r) p) = And (distribuir (Or q p)) (distribuir (Or r p))
+distribuir (And p (Or q r)) = Or (distribuir (And p q)) (distribuir (And p r)) 
+distribuir (And (Or q r) p) = Or (distribuir (And q p)) (distribuir (And r p))
+distribuir (Or p q) = Or (fnn p) (fnn q)
+distribuir (And p q) = And (fnn p) (fnn q)
+distribuir (Not p)= fnn (Not p)
+distribuir p = p
+
 -- Ejercicio 2
 fnc :: Prop -> Prop
-fnc = undefined
-
+fnc (Not p) = distribuir (Not p)
+fnc (And p q) = distribuir (And p q)
+fnc (Or p q) = distribuir (Or p q)
+fnc (Impl p q) = distribuir (Impl p q)
+fnc (Syss p q) = distribuir (Syss p q)
 
 -- 3.3 Resolución Binaria
 
