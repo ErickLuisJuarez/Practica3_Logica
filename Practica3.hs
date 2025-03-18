@@ -83,16 +83,24 @@ type Clausula = [Literal]
 
 -- Ejercicios
 
+
+-- Funcion auxiliar para eliminar duplicados en una lista manualmente
+eliminarDuplicados :: Eq a => [a] -> [a]
+eliminarDuplicados [] = []
+eliminarDuplicados (x:xs)
+    | x `elem` xs = eliminarDuplicados xs
+    | otherwise = x : eliminarDuplicados xs
+
 -- Función auxiliar para procesar disyunciones
 processOR :: Prop -> Clausula
-processOR (Or p q) = processOR p ++ processOR q
-processOR p = [p]  
+processOR (Or p q) = eliminarDuplicados (processOR p ++ processOR q)
+processOR p = [p] 
 
 -- Función para extraer cláusulas de una fórmula en FNC
 clausulas :: Prop -> [Clausula]
-clausulas (And p q) = clausulas p ++ clausulas q 
-clausulas (Or p q) = [processOR (Or p q)] 
-clausulas p = [[p]]  
+clausulas (And p q) = eliminarDuplicados (clausulas p ++ clausulas q)
+clausulas (Or p q) = [processOR (Or p q)]
+clausulas p = [[p]] 
 
 
 -- Ejercicio 2clau
