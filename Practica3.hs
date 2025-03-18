@@ -7,7 +7,13 @@ module Practica03 where
 --              Peña Villegas Diego Eduardo
 
 -- 3.1 Lógica Proposicional
-
+p, q, r, s, t, u :: Prop
+p = Var "p"
+q = Var "q"
+r = Var "r"
+s = Var "s"
+t = Var "t"
+u = Var "u"
 -- Tipo de dato Prop
 data Prop = 
     Var String |
@@ -36,6 +42,7 @@ instance Show Prop where
 --Funcion auxiliar que devuelve la negacion de la formula ingresada
 negar :: Prop -> Prop
 negar (Var p) = Not (Var p)
+negar (Not(Var p)) = Var p
 negar (Cons True) = (Cons False)
 negar (Cons False) = (Cons True)
 negar (Not f) = f
@@ -105,8 +112,15 @@ clausulas p = [[p]]
 
 -- Ejercicio 2clau
 resolucion :: Clausula -> Clausula -> Clausula
-resolucion = undefined
+resolucion [] ys = ys
+resolucion (p:xs) ys = 
+    if negar p `elem` ys 
+    then xs ++ eliminaComple (negar p) ys
+    else p : resolucion xs ys
 
+--Función auxiliar que verifica y borrra el complemetario
+eliminaComple :: Prop -> Clausula -> Clausula
+eliminaComple x ys = [z | z <- ys, z /= x]
 
 -- 3.4 Algoritmo de saturación
 
