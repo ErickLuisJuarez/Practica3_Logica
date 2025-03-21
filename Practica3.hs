@@ -137,6 +137,16 @@ hayResolvente :: Clausula -> Clausula -> Bool
 hayResolvente clausula1 clausula2 =
     any (\l1 -> any (\l2 -> esComplementario l1 l2) clausula2) clausula1
 
--- Ejercicio 2
+-- Función que determina si una formula es satisfacible por el algoritmo de saturación
 saturacion :: Prop -> Bool
-saturacion = undefined
+saturacion formula = saturacionRecursiva (clausulas (fnc formula)) []
+
+-- Función recursiva que calcula la saturación
+saturacionRecursiva :: [Clausula] -> [Clausula] -> Bool
+saturacionRecursiva [] _ = False 
+saturacionRecursiva clausulasProcesadas nuevasClausulas
+    | [] `elem` nuevasClausulas = False
+    | nuevasClausulas == eliminarDuplicados (nuevasClausulas ++ resolventes) = True 
+    | otherwise = saturacionRecursiva (clausulasProcesadas ++ nuevasClausulas) resolventes 
+  where
+    resolventes = [resolucion c1 c2 | c1 <- clausulasProcesadas, c2 <- nuevasClausulas, hayResolvente c1 c2]
